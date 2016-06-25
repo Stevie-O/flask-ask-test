@@ -6,54 +6,52 @@ from flask import Flask, render_template
 
 from flask_ask import Ask, statement, question, session
 
+def MemoryGame(app, path):
+    ask = Ask(app, "/memory_game")
 
-app = Flask(__name__)
-
-ask = Ask(app, "/memory_game")
-
-logging.getLogger("flask_ask").setLevel(logging.DEBUG)
+    logging.getLogger("flask_ask").setLevel(logging.DEBUG)
 
 
-@ask.launch
+    @ask.launch
 
-def new_game():
+    def new_game():
 
-    welcome_msg = render_template('welcome')
+        welcome_msg = render_template('welcome')
 
-    return question(welcome_msg)
-
-
-@ask.intent("YesIntent")
-
-def next_round():
-
-    numbers = [randint(0, 9) for _ in range(3)]
-
-    round_msg = render_template('round', numbers=numbers)
-
-    session.attributes['numbers'] = numbers[::-1]  # reverse
-
-    return question(round_msg)
+        return question(welcome_msg)
 
 
-@ask.intent("AnswerIntent", convert={'first': int, 'second': int, 'third': int})
+    @ask.intent("YesIntent")
 
-def answer(first, second, third):
+    def next_round():
 
-    winning_numbers = session.attributes['numbers']
+        numbers = [randint(0, 9) for _ in range(3)]
 
-    if [first, second, third] == winning_numbers:
+        round_msg = render_template('round', numbers=numbers)
 
-        msg = render_template('win')
+        session.attributes['numbers'] = numbers[::-1]  # reverse
 
-    else:
-
-        msg = render_template('lose')
-
-    return statement(msg)
+        return question(round_msg)
 
 
-if __name__ == '__main__':
+    @ask.intent("AnswerIntent", convert={'first': int, 'second': int, 'third': int})
 
-    app.run(debug=True)
+    def answer(first, second, third):
+
+        winning_numbers = session.attributes['numbers']
+
+        if [first, second, third] == winning_numbers:
+
+            msg = render_template('win')
+
+        else:
+
+            msg = render_template('lose')
+
+        return statement(msg)
+
+
+    if __name__ == '__main__':
+
+        app.run(debug=True)
 
