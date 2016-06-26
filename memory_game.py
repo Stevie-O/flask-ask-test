@@ -7,7 +7,7 @@ from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
 
 def MemoryGame(app, path):
-    ask = Ask(app, "/memory_game")
+    ask = Ask(app, path)
 
     logging.getLogger("flask_ask").setLevel(logging.DEBUG)
 
